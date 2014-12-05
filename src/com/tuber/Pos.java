@@ -1,6 +1,7 @@
 package com.tuber;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
@@ -16,6 +17,11 @@ public class Pos {
     private Set<String> secondHalfPricePromotionList;
     private Map<String, Double> discountPromotionList;
     private Map<String, Integer> cartList;
+    private Map<String, DiscountInfo> discountWhenFullPricePromotionList;
+
+    public Map<String, DiscountInfo> getDiscountWhenFullPricePromotionList() {
+        return discountWhenFullPricePromotionList;
+    }
 
     public Map<String, Double> getItemList() {
         return itemList;
@@ -38,6 +44,18 @@ public class Pos {
         initSecondHalfPricePromotionList();
         initDiscountPromotionList();
         initCartList();
+        initDiscountWhenFullPricePromotion();
+    }
+
+    public void initDiscountWhenFullPricePromotion() throws IOException {
+        discountWhenFullPricePromotionList = new HashMap<String, DiscountInfo>();
+        BufferedReader br = new BufferedReader(new FileReader("properties/discount_when_full_price_promotion.txt"));
+        String lineTxt;
+        while (br.ready()) {
+            lineTxt = br.readLine();
+            String[] params = lineTxt.split(":");
+            discountWhenFullPricePromotionList.put(params[0], new DiscountInfo(Double.parseDouble(params[1]), Double.parseDouble(params[2])/100.));
+        }
     }
 
     public void initSecondHalfPricePromotionList() throws IOException {
