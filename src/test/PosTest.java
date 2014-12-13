@@ -6,6 +6,8 @@ import main.Pos;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
+
 import static org.junit.Assert.assertNotNull;
 
 /**
@@ -32,5 +34,6 @@ public class PosTest {
         Bill bill = new Bill();
 
         pos.print(bill);
+
     }
 }

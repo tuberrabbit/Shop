@@ -17,11 +17,11 @@ public class Pos {
     private Set<String> secondHalfPricePromotionList;
     private Map<String, Double> discountPromotionList;
     private Map<String, Integer> cartList;
-    private Map<String, DiscountInfo> discountWhenFullPricePromotionList;
+//    private Map<String, DiscountInfo> discountWhenFullPricePromotionList;
 
-    public Map<String, DiscountInfo> getDiscountWhenFullPricePromotionList() {
-        return discountWhenFullPricePromotionList;
-    }
+//    public Map<String, DiscountInfo> getDiscountWhenFullPricePromotionList() {
+//        return discountWhenFullPricePromotionList;
+//    }
 
     public Map<String, Double> getItemList() {
         return itemList;
@@ -42,21 +42,21 @@ public class Pos {
     public void initAllTxtList() throws IOException {
         initItemList();
         initSecondHalfPricePromotionList();
-        initDiscountPromotionList();
-        initCartList();
-        initDiscountWhenFullPricePromotion();
+//        initDiscountPromotionList();
+//        initCartList();
+//        initDiscountWhenFullPricePromotion();
     }
 
-    public void initDiscountWhenFullPricePromotion() throws IOException {
-        discountWhenFullPricePromotionList = new HashMap<String, DiscountInfo>();
-        BufferedReader br = new BufferedReader(new FileReader("properties/discount_when_full_price_promotion.txt"));
-        String lineTxt;
-        while (br.ready()) {
-            lineTxt = br.readLine();
-            String[] params = lineTxt.split(":");
-            discountWhenFullPricePromotionList.put(params[0], new DiscountInfo(Double.parseDouble(params[1]), Double.parseDouble(params[2])/100.));
-        }
-    }
+//    public void initDiscountWhenFullPricePromotion() throws IOException {
+//        discountWhenFullPricePromotionList = new HashMap<String, DiscountInfo>();
+//        BufferedReader br = new BufferedReader(new FileReader("properties/discount_when_full_price_promotion.txt"));
+//        String lineTxt;
+//        while (br.ready()) {
+//            lineTxt = br.readLine();
+//            String[] params = lineTxt.split(":");
+//            discountWhenFullPricePromotionList.put(params[0], new DiscountInfo(Double.parseDouble(params[1]), Double.parseDouble(params[2])/100.));
+//        }
+//    }
 
     public void initSecondHalfPricePromotionList() throws IOException {
         secondHalfPricePromotionList = new HashSet<String>();
@@ -81,9 +81,8 @@ public class Pos {
         return Double.parseDouble(param);
     }
 
-    public void initDiscountPromotionList() throws IOException {
+    public void initDiscountPromotionList(BufferedReader br) throws IOException {
         discountPromotionList = new HashMap<String, Double>();
-        BufferedReader br = new BufferedReader(new FileReader("properties/discount_promotion.txt"));
         String lineTxt;
         while ((lineTxt = br.readLine()) != null) {
             String[] params = lineTxt.split(":");
@@ -95,9 +94,8 @@ public class Pos {
         return obtainPrice(param) / 100.;
     }
 
-    public void initCartList() throws IOException {
+    public void initCartList(BufferedReader br) throws IOException {
         cartList = new HashMap<String, Integer>();
-        BufferedReader br = new BufferedReader(new FileReader("properties/cart.txt"));
         String lineTxt;
         while ((lineTxt = br.readLine()) != null) {
             String[] params = lineTxt.split("-");

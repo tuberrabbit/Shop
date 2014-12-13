@@ -34,12 +34,12 @@ public class Bill {
             return false;
         }
         price += item.getPrice()*amount;
-        DiscountPromotion promotion = new DiscountPromotion();
-        if (promotion.hasPromorion(item)) {
-            pricePromotion += promotion.promotion(item, amount);
-        } else {
+//        DiscountPromotion promotion = new DiscountPromotion();
+//        if (promotion.hasPromorion(item)) {
+//            pricePromotion += promotion.promotion(item, amount);
+//        } else {
             pricePromotion += item.getPrice()*amount;
-        }
+//        }
         if (items.containsKey(item)) {
             amount += items.get(item);
         }
