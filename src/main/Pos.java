@@ -1,4 +1,4 @@
-package com.tuber;
+package main;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -130,75 +130,40 @@ public class Pos {
         return Integer.parseInt(params[1]);
     }
 
-    public Item secondHalfPricePromotion(Item item) {
-        Item result = new Item(item);
-        result.setTotalAfter(totalAfter_SecondHalfPrice(item));
-        return result;
-    }
-
-    private double totalAfter_SecondHalfPrice(Item item) {
-        return item.getTotalAfter() - (item.getAmount() / 2) * (item.getPriceAfter() / 2.);
-    }
-
-    public Item discountPromotion(Item item) {
-        Item result = new Item(item);
-        result.setPriceAfter(priceAfter_Discount(item));
-        result.setTotalAfter(totalAfter_Discount(item));
-        return result;
-    }
-
-    private double totalAfter_Discount(Item item) {
-        return item.getTotalAfter() * discountPromotionList.get(item.getId());
-    }
-
-    private double priceAfter_Discount(Item item) {
-        return item.getPriceAfter() * discountPromotionList.get(item.getId());
-    }
-
-    private boolean isDiscountPromotion(Item item) {
-        return (discountPromotionList.containsKey(item.getId()));
-    }
-
-    private boolean isSecondHalfPricePromotion(Item item) {
-        return (secondHalfPricePromotionList.contains(item.getId()));
-    }
-
-    private Item purchaseItem(Map.Entry<String, Integer> entry) {
-        Item result = new Item();
-        result.setId(entry.getKey());
-        result.setAmount(entry.getValue());
-        result.setPriceBefore(itemList.get(entry.getKey()));
-        result.setPriceAfter(result.getPriceBefore());
-        result.setTotalBefore(result.getPriceBefore() * result.getAmount());
-        result.setTotalAfter(result.getTotalBefore());
-        return result;
-    }
-
-    public Cart calculate() {
-        Cart result = new Cart();
-        for (Map.Entry<String, Integer> entry : cartList.entrySet()) {
-            Item item = purchaseItem(entry);
-            if (isSecondHalfPricePromotion(item)) {
-                item = secondHalfPricePromotion(item);
-            }
-            if (isDiscountPromotion(item)) {
-                item = discountPromotion(item);
-            }
-            result.add(item);
+    public Bill calculate(Cart cart) {
+        Bill bill = new Bill();
+        for (Map.Entry<Item, Integer> entry : cart.getItems().entrySet()) {
+            bill.add(entry.getKey(), entry.getValue());
         }
-        return result;
-    }
-
-    public void printShoppingList(Cart cart) {
-        System.out.println("购物明细（数量\t单价\t小计）");
-        for (Item item : cart.getItems()) {
-            System.out.printf("%-10s%-4d\t%-4.0f\t%-10.0f\n", toItemName(item.getId()), item.getAmount(), item.getPriceBefore(), item.getTotalAfter());
-        }
-        System.out.println("总计金额（优惠前\t优惠后\t优惠差价）");
-        System.out.printf("%-10.0f%-6.0f\t%-6.0f\t%-10.0f\n", cart.getTotalAfter(), cart.getTotalBefore(), cart.getTotalAfter(), cart.getTotalBefore() - cart.getTotalAfter());
+        return bill;
     }
 
     private String toItemName(String id) {
         return "item" + Integer.parseInt(id.substring(4));
+    }
+
+    public void print(Bill bill) {
+        System.out.println("购物明细（数量\t单价\t小计）");
+        for (Map.Entry<Item, Integer> entry : bill.getItems().entrySet()) {
+            System.out.printf("%-10s%-4d\t%-4.0f\t%-10.0f\n", toItemName(getItemBarcode(entry)), getItemAmount(entry), getItemPrice(entry), getItemTotalPrice(entry));
+        }
+        System.out.println("总计金额（优惠前\t优惠后\t优惠差价）");
+        System.out.printf("%-10.0f%-6.0f\t%-6.0f\t%-10.0f\n", bill.getPricePromotion(), bill.getPrice(), bill.getPricePromotion(), bill.getPrice() - bill.getPricePromotion());
+    }
+
+    private Integer getItemAmount(Map.Entry<Item, Integer> entry) {
+        return entry.getValue();
+    }
+
+    private double getItemPrice(Map.Entry<Item, Integer> entry) {
+        return entry.getKey().getPrice();
+    }
+
+    private String getItemBarcode(Map.Entry<Item, Integer> entry) {
+        return entry.getKey().getBarcode();
+    }
+
+    private double getItemTotalPrice(Map.Entry<Item, Integer> entry) {
+        return getItemPrice(entry) * getItemAmount(entry);
     }
 }
