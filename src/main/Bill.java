@@ -1,49 +1,66 @@
 package main;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.text.Format;
+import java.util.*;
 
 /**
  * Created by Administrator on 2014/12/11.
  */
 public class Bill {
-    private Map<Item, Integer> items;
-    private double price;
-    private double pricePromotion;
-
-    public double getPrice() {
-        return price;
-    }
-
-    public double getPricePromotion() {
-        return pricePromotion;
-    }
-
-    public Map<Item, Integer> getItems() {
-        return items;
-    }
+    private double promotionTotal;
+    private double originalTotal;
+    private Set<Record> records;
 
     public Bill() {
-        items = new HashMap<Item, Integer>();
-        price = 0;
-        pricePromotion = 0;
+        records = new TreeSet<Record>(new Comparator<Record>() {
+            @Override
+            public int compare(Record o1, Record o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
+        originalTotal = 0;
+        promotionTotal = 0;
     }
 
-    public boolean add(Item item, int amount) {
-        if (amount<1) {
-            return false;
+    @Override
+    public String toString() {
+        StringBuffer buf = new StringBuffer();
+        buf.append("购物明细（数量\t单价\t小计）\n");
+        for (Record record : records) {
+            buf.append(String.format("%-10s%-6d%-8.0f%-6.0f\n", ItemNameParser.parse(record.getName()), record.getAmount(), record.getPrice(), record.getTotal()));
         }
-        price += item.getPrice()*amount;
-//        DiscountPromotion promotion = new DiscountPromotion();
-//        if (promotion.hasPromorion(item)) {
-//            pricePromotion += promotion.promotion(item, amount);
-//        } else {
-            pricePromotion += item.getPrice()*amount;
-//        }
-        if (items.containsKey(item)) {
-            amount += items.get(item);
-        }
-        items.put(item, amount);
-        return true;
+        buf.append("总计金额（优惠前\t优惠后\t优惠差价）\n");
+        buf.append(String.format("%-10.0f%-6.0f\t%-6.0f\t%-10.0f\n", promotionTotal, originalTotal, promotionTotal, originalTotal - promotionTotal));
+        return buf.toString();
+    }
+
+    public void setPromotionTotal(double promotionTotal) {
+        this.promotionTotal = promotionTotal;
+    }
+
+    public double getPromotionTotal() {
+        return promotionTotal;
+    }
+
+    public void setOriginalTotal(double originalTotal) {
+        this.originalTotal = originalTotal;
+    }
+
+    public double getOriginalTotal() {
+        return originalTotal;
+    }
+
+    public Set<Record> getRecords() {
+        return records;
+    }
+
+    public void setRecords(Set<Record> records) {
+        this.records = records;
+    }
+
+    public void add(Record record) {
+        records.add(record);
+        this.originalTotal += record.getPrice()*record.getAmount();
+        this.promotionTotal += record.getTotal();
     }
 }

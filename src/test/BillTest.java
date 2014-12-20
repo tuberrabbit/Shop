@@ -2,6 +2,7 @@ package test;
 
 import main.Bill;
 import main.Item;
+import main.Record;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,18 +23,16 @@ public class BillTest {
     }
 
     @Test
-    public void should_return_true_when_add_item_more_then_0() {
+    public void test_toString() {
+        Record record = new Record();
+        record.setName("item1");
+        record.setAmount(5);
+        record.setPrice(40);
+        record.setTotal(120);
+        bill.getRecords().add(record);
+        bill.setOriginalTotal(200);
+        bill.setPromotionTotal(120);
 
-        boolean flag = bill.add(item, 1);
-
-        assertThat(flag, is(true));
-    }
-
-    @Test
-    public void should_return_false_when_add_item_less_or_equals_then_0() {
-
-        boolean flag = bill.add(item, 0);
-
-        assertThat(flag, is(false));
+        System.out.println(bill.toString());
     }
 }
