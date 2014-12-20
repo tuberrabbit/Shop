@@ -18,14 +18,16 @@ import static org.junit.Assert.assertNull;
  */
 public class PosTest {
     private Pos pos;
+    private Cart cart;
+
     @Before
     public void setUp() throws Exception {
         pos = new Pos();
+        cart = new Cart();
     }
 
     @Test
     public void test_second_half_price_promotion() throws Exception {
-        Cart cart = new Cart();
         Item item = new Item("ITEM000005", 30);
         Set<String> labels = new HashSet<String>();
         labels.add("second_half_price");
@@ -42,7 +44,6 @@ public class PosTest {
 
     @Test
     public void test_discount_promotion() throws Exception {
-        Cart cart = new Cart();
         Item item = new Item("ITEM000005", 30);
         Set<String> labels = new HashSet<String>();
         labels.add("discount");
@@ -58,8 +59,6 @@ public class PosTest {
 
     @Test
     public void should_return_bill_not_null_when_given_cart() {
-        Cart cart = new Cart();
-
         Bill bill = pos.calculate(cart);
 
         assertNotNull(bill);
