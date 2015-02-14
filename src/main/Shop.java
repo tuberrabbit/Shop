@@ -10,6 +10,7 @@ import java.util.Set;
  * Created by Administrator on 2014/12/18.
  */
 public class Shop {
+    public static final int BARCODE_LENGTH = 11;
     private Set<Item> itemList;
 
     public Set<Item> getItemList() {
@@ -44,22 +45,18 @@ public class Shop {
             String line = br.readLine();
             String barcode;
             int amount;
-            if (line.length() < 11) {
+
+            if (line.length() < BARCODE_LENGTH) {
                 barcode = line;
                 amount = 1;
             } else {
                 barcode = line.substring(0, 10);
                 amount = Integer.parseInt(line.substring(11));
             }
-            double price = 0;
-            for (Item item : itemList) {
-                if (item.getBarcode().equals(barcode)) {
-                    price = item.getPrice();
-                    break;
-                }
-            }
-            Item item = new Item(barcode, price);
+
+            Item item = new Item(barcode, getPriceBy(barcode));
             Set<String> labels = new HashSet<String>();
+
             if (DiscountPromotion.include(item.getBarcode())) {
                 labels.add("discount");
             }
@@ -67,10 +64,20 @@ public class Shop {
                 labels.add("second_half_price");
             }
             item.setLabels(labels);
+
             cart.add(item, amount);
         }
 
         return cart;
+    }
+
+    private double getPriceBy(String barcode) {
+        for (Item item : itemList) {
+            if (item.getBarcode().equals(barcode)) {
+                return item.getPrice();
+            }
+        }
+        return 0;
     }
 
     public static void main(String[] asdf) throws IOException {
